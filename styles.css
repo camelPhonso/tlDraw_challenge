@@ -1,0 +1,59 @@
+*{
+    box-sizing: border-box;
+}
+
+#board{}
+
+.copied-sticker{
+    height:5vmin;
+    width:5vmin;
+    opacity:45%;
+}
+
+#picker{
+    background-color: #ccc;
+    height:17vh;
+    width:100vw;
+    position:absolute;
+    bottom:0;
+    left:0;
+    display:grid;
+    grid-template-columns: repeat(auto-fit, 5vh);
+    grid-template-rows: repeat(auto-fit, 5vh);
+    gap:1vmin;
+    padding:1vmin;
+}
+
+.sticker{
+    height:5vh;
+    width:5vh;
+    background-color: whitesmoke;
+    border:2px solid black;
+    border-radius:10px;
+    cursor:grab;
+}
+
+.sticker--skull:after{
+    content:'\1F480';
+    font-size:2rem;
+    text-align:center;
+    padding:.1rem;
+}
+
+.sticker--sparkles:after{
+    content:'\2728';
+    font-size:2rem;
+    text-align:center;
+    padding:.1rem;
+}
+
+.sticker--heart:after{
+    content:'\1F5A4';
+    font-size:2rem;
+    text-align:center;
+    padding:.1rem;
+}
+
+.sticker:active{
+    cursor:grabbing;
+}
