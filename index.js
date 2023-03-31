@@ -1,8 +1,6 @@
+// global variables //////////////////////
+/////////////////////////////////////////
 const board = document.getElementById("board");
-let stickers = document.querySelectorAll(".sticker");
-stickers.forEach((sticker) => {
-  sticker.addEventListener("click", () => grab(sticker));
-});
 
 // templates //////////////////////////
 //////////////////////////////////////
@@ -12,46 +10,105 @@ function createTemplate(script) {
   return template.content.firstElementChild;
 }
 
-// grab the stickers /////////////////
-/////////////////////////////////////
-function grab(element) {
-  let stickerClass = Array.from(element.classList).filter((i) =>
-    new RegExp(/(sticker--)/).test(i)
-  )[0];
-  let copiedSticker = createTemplate(`
-    <div class='copied-sticker'></div>
+function createCarbonCopy(givenClass) {
+  let copy = createTemplate(`
+  <div id='copied-sticker' class='${givenClass}'></div>
   `);
-  copiedSticker.classList.add(stickerClass);
-  board.append(copiedSticker);
+  board.append(copy);
+  return copy;
 }
 
-// drop stickers /////////////////////
-/////////////////////////////////////
-function drop() {
-  let copiedSticker = document.querySelector(".copied-sticker");
-  if (!copiedSticker) return;
+// guarantee a carbon copy of a sticker exists before any action //////////
+//////////////////////////////////////////////////////////////////////////
+let existsCarbonCopy = () => {
+  return document.getElementById("copied-sticker") !== null ? true : false;
+};
 
-  copiedSticker.classList.remove("copied-sticker");
-  console.log("done");
+function findCarbonCopy() {
+  return document.getElementById("copied-sticker");
 }
 
-board.addEventListener("click", () => drop());
+// copy a sticker /////////////////////////////////////
+//////////////////////////////////////////////////////
+function copy(sticker) {
+  let newClass = findModifierClass(sticker);
 
-// track the mouse around the board//
-////////////////////////////////////
-function drag(event) {
-  let copiedSticker = document.querySelector(".copied-sticker");
-  if (!copiedSticker) return;
+  if (!existsCarbonCopy()) return createCarbonCopy(newClass);
+  swapClassOnCopy(newClass);
+}
 
+// identify the correct sticker to copy
+function findModifierClass(sticker) {
+  let regexStickerClasses = new RegExp(/(sticker--)/);
+  let classListArray = Array.from(sticker.classList);
+  let filteredList = classListArray.filter((i) => regexStickerClasses.test(i));
+  return filteredList[0];
+}
+
+function swapClassOnCopy(newClass) {
+  // always called after a successfull existsCarbonCopy()
+  let carbonCopy = findCarbonCopy();
+  let oldClass = findModifierClass(carbonCopy);
+
+  carbonCopy.classList.remove(oldClass);
+  carbonCopy.classList.add(newClass);
+}
+
+// interacting with the carbon copy /////////////////
+////////////////////////////////////////////////////
+// drag the carbon copy over the whiteboard
+function dragCarbonCopy(event) {
+  if (!existsCarbonCopy()) return;
+
+  let carbonCopy = findCarbonCopy();
   let mouseX = event.clientX;
   let mouseY = event.clientY;
 
-  copiedSticker.style.position = "absolute";
-  copiedSticker.style.left = `${mouseX}px`;
-  copiedSticker.style.top = `${mouseY}px`;
+  carbonCopy.style.position = "absolute";
+  carbonCopy.style.left = `${mouseX}px`;
+  carbonCopy.style.top = `${mouseY}px`;
 }
 
-document.addEventListener("mousemove", (e) => drag(e));
+// paste` copy onto the whiteboard /////////////////
+//////////////////////////////////////////////////
+function dropCarbonCopy() {
+  let carbonCopy = findCarbonCopy();
+  carbonCopy.removeAttribute("id", "copied-sticker");
+}
 
-// drop the stickers///////////////
-//////////////////////////////////
+function pasteCarbonCopy() {
+  if (!existsCarbonCopy()) return;
+  let carbonCopy = findCarbonCopy();
+  let newClass = findModifierClass(carbonCopy);
+
+  dropCarbonCopy();
+  createCarbonCopy(newClass);
+}
+
+// delete carbon copy /////////////////////////
+//////////////////////////////////////////////
+function deleteCarbonCopy() {
+  if (!existsCarbonCopy()) return;
+
+  let carbonCopy = findCarbonCopy();
+  carbonCopy.remove();
+}
+
+// event listeners /////////////////////////
+///////////////////////////////////////////
+// copy sticker
+let stickers = document.querySelectorAll(".sticker");
+stickers.forEach((sticker) => {
+  sticker.addEventListener("click", () => copy(sticker));
+});
+
+// drag carbon copy
+document.addEventListener("mousemove", (e) => dragCarbonCopy(e));
+
+// paste carbon copy
+board.addEventListener("click", () => pasteCarbonCopy());
+
+// delete carbon copy
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape") return deleteCarbonCopy();
+});
