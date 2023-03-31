@@ -69,10 +69,12 @@ function dragCarbonCopy(event) {
   carbonCopy.style.top = `${mouseY}px`;
 }
 
-// paste` copy onto the whiteboard /////////////////
-//////////////////////////////////////////////////
+// paste a copy onto the whiteboard /////////////////
+////////////////////////////////////////////////////
 function dropCarbonCopy() {
   let carbonCopy = findCarbonCopy();
+  carbonCopy.classList.add("pasted");
+  carbonCopy.setAttribute("draggable", "true");
   carbonCopy.removeAttribute("id", "copied-sticker");
 }
 
@@ -90,8 +92,7 @@ function pasteCarbonCopy() {
 function deleteCarbonCopy() {
   if (!existsCarbonCopy()) return;
 
-  let carbonCopy = findCarbonCopy();
-  carbonCopy.remove();
+  findCarbonCopy().remove();
 }
 
 // event listeners /////////////////////////
@@ -108,7 +109,34 @@ document.addEventListener("mousemove", (e) => dragCarbonCopy(e));
 // paste carbon copy
 board.addEventListener("click", () => pasteCarbonCopy());
 
-// delete carbon copy
+// 'escape' out of the feature
 document.addEventListener("keydown", (e) => {
   if (e.key === "Escape") return deleteCarbonCopy();
+});
+
+///// drag and drop used stickers ///////////////////
+////////////////////////////////////////////////////
+board.addEventListener("dragover", (e) => {
+  e.preventDefault();
+});
+
+board.addEventListener("dragenter", (e) => {
+  let sticker = e.target;
+
+  sticker.style.opacity = "0%";
+  sticker.setAttribute("id", "used-sticker");
+});
+
+board.addEventListener("dragleave", (e) => {
+  let sticker = e.target;
+
+  sticker.style.position = "absolute";
+  sticker.style.top = `${e.clientY - 30}px`;
+  sticker.style.left = `${e.clientX - 30}px`;
+});
+
+board.addEventListener("dragend", (e) => {
+  let sticker = document.getElementById("used-sticker");
+  sticker.style.opacity = "100%";
+  sticker.removeAttribute("id", "used-sticker");
 });
