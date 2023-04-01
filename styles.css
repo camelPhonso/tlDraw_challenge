@@ -8,9 +8,8 @@
   opacity: 45%;
 }
 
-.pasted{
-  cursor:move;
-  
+.pasted {
+  cursor: move;
 }
 
 #picker {
@@ -25,6 +24,22 @@
   grid-template-rows: repeat(auto-fit, minmax(min-content, 5vh));
   grid-gap: 0.5vmin;
   padding: 1vmin;
+}
+
+.trash-bin {
+  position: relative;
+}
+
+.trash-bin > * {
+  display: none;
+}
+
+.trash-bin::after {
+  content: "\1F5D1";
+  font-size: 4rem;
+  position: absolute;
+  top: calc(50% - 2rem);
+  left: calc(50% - 2rem);
 }
 
 .sticker {
