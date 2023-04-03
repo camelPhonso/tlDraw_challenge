@@ -50,30 +50,22 @@
   border-radius: 10px;
   cursor: grab;
   position: relative;
+  text-align:center;
 }
 
 .sticker--skull:after {
   content: "\1F480";
-  font-size: 2rem;
-  padding: 0.1rem;
-  position: absolute;
-  top: -0.5vh;
+  font-size: 4vh;
 }
 
 .sticker--sparkles:after {
   content: "\2728";
-  font-size: 2rem;
-  padding: 0.1rem;
-  position: absolute;
-  top: -0.5vh;
+  font-size: 4vh;
 }
 
 .sticker--heart:after {
   content: "\1F5A4";
-  font-size: 2rem;
-  padding: 0.1rem;
-  position: absolute;
-  top: -0.5vh;
+  font-size: 4vh;
 }
 
 .sticker:active {
